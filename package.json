@@ -1,11 +1,11 @@
 {
-  "name": "my-addon-key",
-  "displayName": "My Add-on Name",
+  "name": "thingy",
+  "displayName": "THINGY",
   "description": "You add-on description",
   "version": "0.1.0",
   "author": {
-    "name": "My Name",
-    "url": "http://mycompany.com"
+    "name": "Jacob Teal",
+    "url": "http://servicerocket.com"
   },
   "license": "Apache 2.0",
   "engines": {
