@@ -4,12 +4,14 @@ var empanadas = (function(){
 
     //the array to be filled with individual orders
     var orders = [];    
-    var orderlines = [];
+    var abrevs = [];
     var sumUser = 0;
     var tip = 0;
-    
-    return{
 
+
+    return{
+	
+	userRet:{};
 	prices: {};
 
 	init: function(){
@@ -19,7 +21,7 @@ var empanadas = (function(){
 	},
 
 	getFromDB: function(date){
-	    db = DB(date);
+	    db = getOrder(date);
 
 	},
 	
@@ -27,11 +29,15 @@ var empanadas = (function(){
 	    
 	    for(var i = 0; i < db.orders.length; i++){
 		for(var j = 0; j < db.orders[i].orderlines.length; j++){
-		    sumUser += orderlines[j].amount * prices[orderlines[j].abbreviation];
+		    sumUser += orderlines[j].amount * empanadas.prices[orderlines[j].abbreviation];
+		    abrevs.push() = orderlines[j].abbreviation;
+		    
 		}	
 	    }
-	
+	    
 	    sumUser += sumeUser*.1;
+	    empanadas.userRet["abbreviations"] = abrevs;
+	    empanadas.userret["sum"] = sumUser;
 	}
 
     }
@@ -39,4 +45,4 @@ var empanadas = (function(){
 
 })();
 
-empanadas.init()
+//empanadas.init()
