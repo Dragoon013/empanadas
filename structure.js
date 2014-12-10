@@ -37,7 +37,7 @@ var empanadas = (function(){
 	    
 	    sumUser += sumeUser*.1;
 	    empanadas.userRet["abbreviations"] = abrevs;
-	    empanadas.userret["sum"] = sumUser;
+	    empanadas.userRet["sum"] = sumUser;
 	}
 
     }
