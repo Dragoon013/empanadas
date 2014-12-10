@@ -101,7 +101,7 @@ var MENU = {
   }
 };
 
-function add(room, context) {
+function createOrder(room, context) {
   var order = {
     name: context.sender.name,
     orderLines: []
@@ -139,7 +139,16 @@ addon.webhook('room_message', /^\/hello$/, function *() {
 });
 
 addon.webhook('room_message', /^\/empanada(.*)$/, function *() {
-  yield add(this.roomClient, this);
+	if (context.match[1].trim() == "help"){
+		yield printhelp(this.roomClient, this);
+	}
+	if (context.match[1].trim() == "order"){
+		yield printOrder(this.roomClient, this);
+	}
+	if (context.match[1].trim() == "myorder"){
+		yield printMyOrder(this.roomClient, this);
+	}
+	yield createOrder(this.roomClient, this);
 });
 
 app.listen();
