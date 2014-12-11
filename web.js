@@ -101,6 +101,39 @@ var MENU = {
   }
 };
 
+/**
+ * Summary
+ */
+var abrevs = [];
+var sumUser = 0;
+var tip = 0;
+
+userRet:{};
+
+function init() {
+  getFromDB(date);
+  sumOrders();
+}
+
+function getFromDB(date) {
+  db = getOrder(date);
+}
+
+function sumOrders() {
+  for(var i = 0; i < db.orders.length; i++){
+    for(var j = 0; j < db.orders[i].orderlines.length; j++){
+      sumUser += db.orders[i].orderlines[j].amount * empanadas.Menu[db.orders[i].orderlines[j].abbreviation];
+      abrevs.push() = db.orders[i].orderlines[j].abbreviation;
+    }
+  }
+  sumUser += sumeUser*.1;
+  empanadas.userRet["abbreviations"] = abrevs;
+  empanadas.userRet["sum"] = sumUser;
+}
+
+/**
+ * Commands
+ */
 function createOrder(room, context) {
   var order = {
     name: context.sender.name,
@@ -140,6 +173,11 @@ function createOrder(room, context) {
   return room.sendNotification(context.sender.name + ', you ordered ' + orderMessage + ' empanada(s). Your total with tip is <b>' + totalMessage + ' CLP</b>.');
 }
 
+function printOrder(room, context) {
+  init();
+  return room.sendNotification('Your total with tip is <b>' + userRet['sum'] + ' CLP</b>.');
+}
+
 var addon = app.addon()
   .hipchat()
   .allowRoom(true)
@@ -159,7 +197,7 @@ addon.webhook('room_message', /^\/empanada(.*)$/, function *() {
     // TODO
     // yield printhelp(this.roomClient, this);
   } else if (command == "order"){
-    // yield printOrder(this.roomClient, this);
+    yield printOrder(this.roomClient, this);
   } else if (command == "myorder"){
     // yield printMyOrder(this.roomClient, this);
   } else {
@@ -168,43 +206,6 @@ addon.webhook('room_message', /^\/empanada(.*)$/, function *() {
 });
 
 app.listen();
-
-
-
-var abrevs = [];
-var sumUser = 0;
-var tip = 0;
-
-
-
-
-userRet:{};
-
-init: function(){
-    
-    getFromDB(date);
-    sumOrders();
-},
-
-getFromDB: function(date){
-    db = getOrder(date);
-    
-},
-
-sumOrders: function(){
-	    
-    for(var i = 0; i < db.orders.length; i++){
-	for(var j = 0; j < db.orders[i].orderlines.length; j++){
-	    sumUser += db.orders[i].orderlines[j].amount * empanadas.Menu[db.orders[i].orderlines[j].abbreviation];
-	    abrevs.push() = db.orders[i].orderlines[j].abbreviation;
-	    
-	}	
-    }
-	    
-    sumUser += sumeUser*.1;
-    empanadas.userRet["abbreviations"] = abrevs;
-    empanadas.userRet["sum"] = sumUser;
-}
 
 
 
