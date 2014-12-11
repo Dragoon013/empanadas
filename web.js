@@ -107,21 +107,37 @@ function createOrder(room, context) {
     orderLines: []
   };
 
-  var orderMessage = '';
-  var totalMessage = 0;
   var unparsedOrderLines = context.match[1].trim().split(/ /);
   for (var i = 0; i < unparsedOrderLines.length; ++i) {
-	var matches = /(\d*)(.*)/.exec(unparsedOrderLines[i]);
+    var matches = /(\d*)(.*)/.exec(unparsedOrderLines[i]);
+    if (!(matches[2] in MENU)) {
+      continue;
+    }
+
     order.orderLines.push({
       abbreviation: matches[2],
       quantity: matches[1]
     });
-
-    orderMessage += matches[1] + 'x' + MENU[matches[2]].name + ', ';
-    totalMessage += MENU[matches[2]].price * parseInt(matches[1]);
   }
 
-  return room.sendNotification(context.sender.name + ', you ordered ' + orderMessage + ' and your total is ' + totalMessage + '.');
+  var orderMessage = '';
+  var totalMessage = 0;
+  for (var i = 0; i < order.orderLines.length; ++i) {
+    var quantity = order.orderLines[i].quantity;
+    var abbreviation = order.orderLines[i].abbreviation;
+    orderMessage += quantity + 'x' + MENU[abbreviation].name;
+    totalMessage += MENU[abbreviation].price * parseInt(quantity);
+
+    if (i == order.orderLines.length - 2) {
+      orderMessage += ' and ';
+    } else if (i != order.orderLines.length - 1) {
+      orderMessage += ', ';
+    }
+  }
+
+  totalMessage = totalMessage * 1.1;
+
+  return room.sendNotification(context.sender.name + ', you ordered ' + orderMessage + ' empanada(s). Your total with tip is <b>' + totalMessage + ' CLP</b>.');
 }
 
 var addon = app.addon()
@@ -134,34 +150,21 @@ if (process.env.DEV_KEY) {
 }
 
 addon.webhook('room_message', /^\/hello$/, function *() {
-  console.log(this);
   yield this.roomClient.sendNotification('Hi pendejo ' + this.sender.name + '!');
 });
 
 addon.webhook('room_message', /^\/empanada(.*)$/, function *() {
-	if (context.match[1].trim() == "help"){
-		yield printhelp(this.roomClient, this);
-	}
-	if (context.match[1].trim() == "order"){
-		yield printOrder(this.roomClient, this);
-	}
-	if (context.match[1].trim() == "myorder"){
-		yield printMyOrder(this.roomClient, this);
-	}
-	yield createOrder(this.roomClient, this);
+  var command = this.match[1].trim();
+  if (command == "help") {
+    // TODO
+    // yield printhelp(this.roomClient, this);
+  } else if (command == "order"){
+    // yield printOrder(this.roomClient, this);
+  } else if (command == "myorder"){
+    // yield printMyOrder(this.roomClient, this);
+  } else {
+    yield createOrder(this.roomClient, this);
+  }
 });
 
 app.listen();
-
-/*
-{
-	orders: [{
-		name: 'Joaquin√n Benavides',
-		orderLines: [{
-			abbreviation: 'k',
-			quantity: 2
-		}]
-	}]
-}
-*/
-
